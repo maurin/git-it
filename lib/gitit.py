@@ -218,15 +218,15 @@ class Gitit:
       git.command_lines('reset', ['HEAD', abs_ticket_dir])
       misc.rmdirs(abs_ticket_dir)
 
-      print 'ticket \'%s\' moved to release \'%s\'' % (sha7, to_rel)
+      print 'ticket \'%s\' moved to component \'%s\'' % (sha7, to_rel)
     except OSError, e:
       log.printerr('could not move ticket \'%s\' to \'%s\':' % (sha7, to_rel))
       log.printerr(e)
-  
+
   def show(self, sha):
     i, _, fullsha, _ = self.get_ticket(sha)
     i.print_ticket(fullsha)
-  
+
   def sync(self):
     # check whether this working tree has unstaged/uncommitted changes
     # in order to prevent data loss from happening

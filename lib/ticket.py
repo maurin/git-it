@@ -65,16 +65,16 @@ def create_interactive():
   else:
     i.prio = int(prio_string)
   i.weight = int(ask_for_pattern('Weight [1-27] (1=small,3=minor,9=major,27=super): ', lambda x: is_int(x) and 1 <= int(x) <= 27))
-  i.release = ask_for_pattern('Release: ').strip()
-  if i.release == '':
-    i.release = 'uncategorized'
+  i.component = ask_for_pattern('Component: ').strip()
+  if i.component == '':
+    i.component = 'uncategorized'
   #i.body = ask_for_multiline_pattern('Describe the ticket:\n')
   i.status = 'open'
   i.date = datetime.datetime.now()
   i.issuer = '%s <%s>' % (fullname, email)
   return i
 
-def create_from_lines(array_with_lines, id = None, release = None, backward_compatible = False):
+def create_from_lines(array_with_lines, id = None, component = None, backward_compatible = False):
   # Create an empty ticket
   i = Ticket()
 
@@ -127,19 +127,19 @@ def create_from_lines(array_with_lines, id = None, release = None, backward_comp
   if id:
     i.id = id
 
-  if i.release:
-    i.release = release
+  if i.component:
+    i.component = component
 
   # Return the new ticket
   return i
 
-def create_from_string(content, id = None, release = None, backward_compatible = False):
+def create_from_string(content, id = None, component = None, backward_compatible = False):
   lines = content.split(os.linesep)
-  return create_from_lines(lines, id, release, backward_compatible)
+  return create_from_lines(lines, id, component, backward_compatible)
 
-def create_from_file(filename, overwrite_id = None, overwrite_release = None):
-  if (overwrite_id and not overwrite_release) or (overwrite_release and not overwrite_id):
-    log.printerr('program error: specify both an alternative ID and alternative release or neither')
+def create_from_file(filename, overwrite_id = None, overwrite_component = None):
+  if (overwrite_id and not overwrite_component) or (overwrite_component and not overwrite_id):
+    log.printerr('program error: specify both an alternative ID and alternative component or neither')
     return
 
   if overwrite_id:
@@ -147,16 +147,16 @@ def create_from_file(filename, overwrite_id = None, overwrite_release = None):
   else:
     dir, id = os.path.split(filename)
 
-  if overwrite_release:
-    release = overwrite_release
+  if overwrite_component:
+    component = overwrite_component
   else:
-    _, release = os.path.split(dir)
+    _, component = os.path.split(dir)
 
   content = misc.read_file_contents(filename)
   if not content:
     return None
   else:
-    return create_from_string(content, id, release)
+    return create_from_string(content, id, component)
 
 
 class Ticket:
@@ -186,7 +186,7 @@ class Ticket:
     self.status = 'open'
     self.assigned_to = '-'
     self.weight = 3  # the weight of 'minor' by default
-    self.release = 'uncategorized'
+    self.component = 'uncategorized'
 
   def is_mine(self):
     fullname = os.popen('git config user.name').read().strip()
@@ -241,7 +241,7 @@ class Ticket:
                 'Weight: %d'      % self.weight,
                 'Status: %s'      % self.status,
                 'Assigned to: %s' % self.assigned_to,
-                'Release: %s'     % self.release,
+                'Component: %s'     % self.component,
                 '',
                 self.body
               ]
@@ -266,12 +266,12 @@ class Ticket:
     self.print_ticket_field('Weight', self.weight)
     self.print_ticket_field('Status', self.status, None, self.status_colors[self.status])
     self.print_ticket_field('Assigned to', self.assigned_to)
-    self.print_ticket_field('Release', self.release)
+    self.print_ticket_field('Component', self.component)
     print ''
     print self.body
 
   def filename(self):
-    file = os.path.join(repo.find_root(), it.TICKET_DIR, self.release, self.id)
+    file = os.path.join(repo.find_root(), it.TICKET_DIR, self.component, self.id)
     return file
 
   def save(self, file = None):
