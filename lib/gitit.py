@@ -183,7 +183,7 @@ class Gitit:
 
     # Remove the temporary file
     os.remove(it.EDIT_TMP_FILE)
-  
+
   def mv(self, sha, to_rel):
     self.require_itdb()
     i, rel, fullsha, src_path = self.get_ticket(sha)
