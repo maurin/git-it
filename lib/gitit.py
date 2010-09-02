@@ -280,7 +280,7 @@ class Gitit:
     git.command_lines('reset', ['HEAD', abs_ticket_dir])
     misc.rmdirs(abs_ticket_dir)
     return i
-  
+
   def progress_bar(self, percentage_done, width = 32):
     blocks_done = int(percentage_done * 1.0 * width)
     format_string_done = ('%%-%ds' % blocks_done) % ''
@@ -291,7 +291,7 @@ class Gitit:
 
   def __print_ticket_rows(self, rel, tickets, show_types, show_progress_bar, annotate_ownership):
     print_count = 0
-    
+
     # Get the available terminal drawing space
     _, width = os.popen('stty size').read().strip().split()
     width = int(width)
@@ -351,9 +351,9 @@ class Gitit:
       print ''
     else:
       pass
-      
+
     return print_count
-	
+
   def list(self, show_types = ['open', 'test'], releases_filter = []):
     self.require_itdb()
     releasedirs = filter(lambda x: x[1] == 'tree', git.tree(it.ITDB_BRANCH + \
